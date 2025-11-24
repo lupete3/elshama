@@ -563,13 +563,20 @@
           });
       });
 
-      // ✅ Impression fluide après validation
+      // ✅ Impression fluide via iframe (sans popup)
       function printFacture(url) {
-          const popup = window.open(url, "_blank", "height=900,width=800");
-          popup.addEventListener("load", () => {
-              popup.print();
-              popup.addEventListener("afterprint", () => popup.close());
-          });
+          let iframe = document.getElementById('printFrame');
+          if (!iframe) {
+              iframe = document.createElement('iframe');
+              iframe.id = 'printFrame';
+              iframe.style.position = 'absolute';
+              iframe.style.width = '0';
+              iframe.style.height = '0';
+              iframe.style.border = 'none';
+              document.body.appendChild(iframe);
+          }
+          
+          iframe.src = url;
       }
 
       window.addEventListener('facture-validee', event => {
