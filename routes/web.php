@@ -14,6 +14,18 @@ Route::get('/', function () {
   return redirect()->route('login');
 })->name('home');
 
+Route::get('/documentation', function () {
+  return view('pages.documentation');
+})->name('documentation');
+
+Route::get('/license', function () {
+  return view('pages.license');
+})->name('license');
+
+Route::get('/support', function () {
+  return view('pages.support');
+})->name('support');
+
 Route::get('dashboard', [DashboardController::class, 'index'])
   ->middleware(['auth', 'verified', 'check.subscription'])
   ->name('dashboard');

@@ -13,16 +13,13 @@
 
       <!-- Right: links -->
       <div class="d-none d-lg-inline-block">
-        <a href="{{ config('variables.licenseUrl') ?? '#' }}" class="footer-link me-4" target="_blank">
+        <a href="{{ route('license') }}" class="footer-link me-4">
           {{ __('footer.license') }}
         </a>
-        {{-- <a href="{{ config('variables.moreThemes') ?? '#' }}" target="_blank" class="footer-link me-4">
-          {{ __('footer.more_themes') }}
-        </a> --}}
-        <a href="{{ config('variables.documentation') ? config('variables.documentation').'/laravel-introduction.html' : '#' }}" target="_blank" class="footer-link me-4">
+        <a href="{{ route('documentation') }}" class="footer-link me-4">
           {{ __('footer.documentation') }}
         </a>
-        <a href="{{ config('variables.support') ?? '#' }}" target="_blank" class="footer-link d-none d-sm-inline-block">
+        <a href="{{ route('support') }}" class="footer-link d-none d-sm-inline-block">
           {{ __('footer.support') }}
         </a>
       </div>
