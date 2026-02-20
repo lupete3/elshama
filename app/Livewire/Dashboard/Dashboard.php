@@ -22,15 +22,15 @@ class Dashboard extends Component
 
   public function refreshLocale($locale)
   {
-      app()->setLocale($locale);
-      $this->render();
+    app()->setLocale($locale);
+    $this->render();
   }
 
   public function mount()
   {
     if (Auth::user()->role_id == 1) {
       $this->storeId = null;
-    } else {
+    } elseif (Auth::user()->isInventoryUser()) {
       $store = Auth::user()->stores()->first();
       $this->storeId = $store?->id;
     }
@@ -48,7 +48,7 @@ class Dashboard extends Component
       ->pluck('total', 'week');
 
     $labels = $weeklySales->keys()->map(fn($w) => 'Semaine ' . $w)->values();
-    $data = $weeklySales->values()->map(fn($v) => (float)$v)->values();
+    $data = $weeklySales->values()->map(fn($v) => (float) $v)->values();
 
     $this->dispatch('weeklySalesUpdated', labels: $labels, data: $data);
   }
@@ -122,14 +122,14 @@ class Dashboard extends Component
     $columns = array_map(fn($col) => "products.$col", $columns);
 
     $popularProducts = Product::select(array_merge($columns, [DB::raw('SUM(sale_items.quantity) as total_sold')]))
-        ->join('sale_items', 'products.id', '=', 'sale_items.product_id')
-        ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
-        ->when($this->storeId, fn($q) => $q->where('sales.store_id', $this->storeId))
-        ->when(Auth::check() && Auth::user()->tenant_id, fn($q) => $q->where('sales.tenant_id', Auth::user()->tenant_id))
-        ->groupBy($columns)
-        ->orderByDesc('total_sold')
-        ->take(6)
-        ->get();
+      ->join('sale_items', 'products.id', '=', 'sale_items.product_id')
+      ->join('sales', 'sales.id', '=', 'sale_items.sale_id')
+      ->when($this->storeId, fn($q) => $q->where('sales.store_id', $this->storeId))
+      ->when(Auth::check() && Auth::user()->tenant_id, fn($q) => $q->where('sales.tenant_id', Auth::user()->tenant_id))
+      ->groupBy($columns)
+      ->orderByDesc('total_sold')
+      ->take(6)
+      ->get();
 
 
     $sales = Sale::selectRaw('DATE(sale_date) as date, SUM(total_paid) as total')

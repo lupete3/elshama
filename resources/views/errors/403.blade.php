@@ -11,7 +11,7 @@
 
         // 🔹 Préparation du message WhatsApp dynamique
         $whatsappMessage = urlencode("Bonjour, je souhaite renouveler mon abonnement sur {$appName}.\n\nDétails de mon organisation :\n🏢 Nom : {$tenantName}\n📧 Email : {$tenantEmail}");
-        $whatsappNumber = '243970386451'; // Remplace avec ton numéro WhatsApp sans + ni espaces
+        $whatsappNumber = '243978333654'; // Remplace avec ton numéro WhatsApp sans + ni espaces
     @endphp
 
     <div class="d-flex flex-column justify-content-center align-items-center text-center" style="min-height: calc(100vh - 85px)">

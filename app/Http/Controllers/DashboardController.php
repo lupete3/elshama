@@ -16,6 +16,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
+        // Si c'est un utilisateur Boulangerie, redirection vers son dashboard dédié
+        if ($user->isBakeryUser()) {
+            return redirect()->route('dashboard.boulangerie');
+        }
+
         return view('dashboard');
     }
 

@@ -10,11 +10,10 @@ class Client extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tenant_id',
-        'name',
-        'phone',
+        'nom',
+        'telephone',
         'email',
-        'address',
+        'adresse',
         'debt',
     ];
 
@@ -26,10 +25,5 @@ class Client extends Model
     public function debts()
     {
         return $this->hasMany(ClientDebt::class);
-    }
-
-    public function tenant()
-    {
-        return $this->belongsTo(Tenant::class);
     }
 }

@@ -40,30 +40,58 @@ new class extends Component {
 <section>
     @include('partials.settings-heading')
 
-    <x-settings.layout :subheading="__('password.subheading')">
-        <form wire:submit="updatePassword" class="w-50">
-            <div class="mb-3">
-                <label for="current_password" class="form-label">{{ __('password.current_password') }}</label>
-                <input type="password" id="current_password" wire:model="current_password" class="form-control" required autocomplete="current-password" />
-            </div>
+    <x-settings.layout>
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card mb-4">
+                    <div class="card-header border-bottom">
 
-            <div class="mb-3">
-                <label for="password" class="form-label">{{ __('password.new_password') }}</label>
-                <input type="password" id="password" wire:model="password" class="form-control" required autocomplete="new-password" />
-            </div>
+                                           <h5 class="card-title mb-0">{{ __('password.subheading') }}</h5>
+                    </div>
+                    <div class="card-body pt-4">
+                        <form wire:submit="updatePassword">
+                            <div class="mb-4">
 
-            <div class="mb-3">
-                <label for="password_confirmation" class="form-label">{{ __('password.confirm_password') }}</label>
-                <input type="password" id="password_confirmation" wire:model="password_confirmation" class="form-control" required autocomplete="new-password" />
-            </div>
+                                                   <label for="current_password" class="form-label">{{ __('password.current_password') }}</label>
+                                <div class="input-group input-group-merge">
+                                    <span class="input-group-text"><i class="bx bx-lock-alt"></i></span>
+                                    <input type="password" id="current_password" wire:model="current_password" class="form-control" required autocomplete="current-password" placeholder="············" />
+                                </div>
 
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary w-100">{{ __('password.save') }}</button>
+                                                   @error('current_password') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                            </div>
 
-                <x-action-message class="ms-3" on="password-updated">
-                    {{ __('password.saved') }}
-                </x-action-message>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">{{ __('password.new_password') }}</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bx-key"></i></span>
+                                        <input type="password" id="password" wire:model="password" class="form-control" required autocomplete="new-password" placeholder="············" />
+                                    </div>
+                                    @error('password') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="password_confirmation" class="form-label">{{ __('password.confirm_password') }}</label>
+                                    <div class="input-group input-group-merge">
+                                        <span class="input-group-text"><i class="bx bx-key"></i></span>
+                                        <input type="password" id="password_confirmation" wire:model="password_confirmation" class="form-control" required autocomplete="new-password" placeholder="············" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-2 d-flex align-items-center">
+                                <button type="submit" class="btn btn-primary me-3">
+                                    <i class="bx bx-save me-1"></i> {{ __('password.save') }}
+                                </button>
+                                <x-action-message class="text-success fw-bold" on="password-updated">
+                                    <i class="bx bx-check-double me-1"></i> {{ __('password.saved') }}
+                                </x-action-message>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
     </x-settings.layout>
 </section>

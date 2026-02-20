@@ -23,7 +23,7 @@ class CheckSubscription
         }
 
         // 🔹 Bypass si c'est un Super Admin
-        if ($user->role && $user->role->name === 'Super Admin') {
+        if ($user->hasRoleString('Super Admin')) {
             return $next($request);
         }
 

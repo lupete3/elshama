@@ -18,12 +18,12 @@ class CheckSuperAdmin
 
         // 🔹 Si aucun utilisateur n'est connecté
         if (!$user) {
-          notyf()->error(__('messages.page_not_found_title'));
-          return redirect()->route('login');
+            notyf()->error(__('messages.page_not_found_title'));
+            return redirect()->route('login');
         }
 
-        // 🔹 Vérifie si le rôle est bien "super_admin" (ou "Super Admin" selon ta base)
-        if ($user->role->name !== 'Super Admin' && strtolower($user->role->name) !== 'super admin') {
+        // 🔹 Vérifie si le rôle est bien "Super Admin"
+        if (!$user->hasRoleString('Super Admin')) {
             // Si c'est une requête AJAX ou API → renvoyer une réponse JSON
             if ($request->expectsJson()) {
                 notyf()->error(__('messages.page_not_found_title'));
