@@ -77,7 +77,7 @@
                                                 <span class="badge bg-label-secondary">{{ $prod->solde }}</span>
                                             </td>
                                             <td class="text-center" style="width: 150px;">
-                                                <input type="number" 
+                                                <input type="number" step="any"
                                                     class="form-control form-control-sm text-center" 
                                                     placeholder="0"
                                                     wire:model.live.debounce.500ms="remains.{{ $prod->id }}"
@@ -121,7 +121,7 @@
                                     </div>
                                     <div class="d-flex align-items-center gap-1">
                                         <button class="btn btn-xs btn-outline-secondary p-1" wire:click="decreaseQty({{ $id }})"><i class="bx bx-minus"></i></button>
-                                        <input type="number" 
+                                        <input type="number" step="any"
                                                class="form-control form-control-sm text-center p-0" 
                                                style="width: 50px;" 
                                                value="{{ $item['quantity'] }}" 
@@ -169,7 +169,7 @@
                             <label class="form-label small fw-bold text-uppercase">{{ __('Montant Reçu (Payé)') }}</label>
                             <div class="input-group">
                                 <span class="input-group-text">FC</span>
-                                <input type="number" class="form-control @error('montantRecu') is-invalid @enderror" wire:model.live="montantRecu">
+                                <input type="number" step="any" class="form-control @error('montantRecu') is-invalid @enderror" wire:model.live="montantRecu">
                             </div>
                             @error('montantRecu') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>

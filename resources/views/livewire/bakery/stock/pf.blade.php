@@ -147,16 +147,16 @@
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Prix de Vente') }}</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control @error('prix') is-invalid @enderror"
-                                        wire:model="prix">
+                                    <input type="number" step="any"
+                                        class="form-control @error('prix') is-invalid @enderror" wire:model="prix">
                                     <span class="input-group-text">FC</span>
                                 </div>
                                 @error('prix') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Solde initial') }}</label>
-                                <input type="number" class="form-control @error('solde') is-invalid @enderror"
-                                    wire:model="solde">
+                                <input type="number" step="any"
+                                    class="form-control @error('solde') is-invalid @enderror" wire:model="solde">
                                 @error('solde') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>
@@ -200,7 +200,8 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ __('Quantité à expédier') }}</label>
-                                <input type="number" class="form-control @error('quantite_exp') is-invalid @enderror"
+                                <input type="number" step="any"
+                                    class="form-control @error('quantite_exp') is-invalid @enderror"
                                     wire:model="quantite_exp" placeholder="0">
                                 @error('quantite_exp') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
@@ -264,7 +265,7 @@
                                                         <td>{{ $p->designation }}</td>
                                                         <td>{{ $p->solde }} pcs</td>
                                                         <td>
-                                                            <input type="number" step="0.01"
+                                                            <input type="number" step="any"
                                                                 class="form-control form-control-sm @error('massQtys.' . $pfId) is-invalid @enderror"
                                                                 wire:model="massQtys.{{ $pfId }}">
                                                             @error('massQtys.' . $pfId) <div class="invalid-feedback small">

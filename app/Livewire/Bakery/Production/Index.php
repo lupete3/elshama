@@ -17,6 +17,8 @@ class Index extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
+    public $searchPf = '';         // Search inside modal – finished products
+    public $searchIngredient = ''; // Search inside modal – raw materials
     public $checkedPfs = []; // Array of stock_pf_id => boolean
     public $pfQuantities = []; // Array of stock_pf_id => quantity
     public $charge_personnel = 0;
@@ -45,6 +47,23 @@ class Index extends Component
     {
         $this->resetFields();
         $this->isEditMode = false;
+
+        // Auto-check raw materials marked as auto_production
+        $autoIngredients = StockUsine::with('stockMaison')
+            ->whereHas('stockMaison', fn($q) => $q->where('auto_production', true))
+            ->get();
+
+        foreach ($autoIngredients as $usineItem) {
+            $this->checkedIngredients[$usineItem->id] = true;
+            $this->selectedIngredients[] = [
+                'stock_usine_id' => $usineItem->id,
+                'designation' => $usineItem->stockMaison->designation,
+                'quantite' => (float) ($usineItem->stockMaison->configuration ?? 0),
+                'unite' => $usineItem->stockMaison->unite,
+                'prix' => $usineItem->stockMaison->prix,
+            ];
+        }
+
         $this->dispatch('openModal', ['id' => 'productionModal']);
     }
 
@@ -216,6 +235,8 @@ class Index extends Component
         $this->checkedIngredients = [];
         $this->ingredient_id = null;
         $this->ingredient_quantite = null;
+        $this->searchPf = '';
+        $this->searchIngredient = '';
     }
 
     public function deleteProduction($id)
@@ -325,8 +346,12 @@ class Index extends Component
             ->orderBy('id', 'DESC')
             ->paginate(10);
 
-        $produitsPfs = StockPf::orderBy('designation', 'ASC')->get();
-        $matieresPremieres = StockUsine::with('stockMaison')->get();
+        $produitsPfs = StockPf::when($this->searchPf, fn($q) => $q->where('designation', 'like', '%' . $this->searchPf . '%'))
+            ->orderBy('designation', 'ASC')->get();
+
+        $matieresPremieres = StockUsine::with('stockMaison')
+            ->when($this->searchIngredient, fn($q) => $q->whereHas('stockMaison', fn($sq) => $sq->where('designation', 'like', '%' . $this->searchIngredient . '%')))
+            ->get();
 
         return view('livewire.bakery.production.index', [
             'productions' => $productions,

@@ -205,7 +205,7 @@
                             <div class="col-12">
                                 <label class="form-label fw-bold">{{ __('Montant (FC)') }}</label>
                                 <div class="input-group input-group-merge">
-                                    <input type="number" step="0.01"
+                                    <input type="number" step="any"
                                         class="form-control @error('montant') is-invalid @enderror" wire:model="montant"
                                         placeholder="0.00">
                                     <span class="input-group-text fw-bold">FC</span>

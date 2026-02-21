@@ -178,7 +178,7 @@
                                 <div class="mb-3 col-md-6">
                                     {{-- Clé : champ_montant --}}
                                     <label for="amount" class="form-label">{{ __('expense.champ_montant') }}</label>
-                                    <input type="number" step="0.01"
+                                    <input type="number" step="any"
                                         class="form-control @error('amount') is-invalid @enderror" wire:model="amount"
                                         id="amount">
                                     @error('amount')

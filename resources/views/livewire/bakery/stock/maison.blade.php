@@ -53,6 +53,7 @@
                         @if(!in_array(Auth::user()->role, ['geran_depot_usine', 'geran_depot_magasin', 'geran_depot_boulangerie']))
                             <th>{{ __('Valeur') }}</th>
                         @endif
+                        <th class="text-center">{{ __('Auto Production') }}</th>
                         <th class="text-center">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -78,6 +79,14 @@
                             @if(!in_array(Auth::user()->role, ['geran_depot_usine', 'geran_depot_magasin', 'geran_depot_boulangerie']))
                                 <td>{{ number_format($item->prix * $item->solde, 0, ',', ' ') }} FC</td>
                             @endif
+                            <td class="text-center">
+                                @if($item->auto_production)
+                                    <span class="badge bg-label-success"><i
+                                            class="bx bx-check-circle me-1"></i>{{ __('Oui') }}</span>
+                                @else
+                                    <span class="badge bg-label-secondary">{{ __('Non') }}</span>
+                                @endif
+                            </td>
                             <td class="text-center text-nowrap">
                                 <button class="btn btn-sm btn-outline-warning me-1"
                                     wire:click="openTransferModal({{ $item->id }})">
@@ -157,23 +166,37 @@
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Prix d\'achat') }}</label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control @error('prix') is-invalid @enderror"
-                                        wire:model="prix">
+                                    <input type="number" step="any"
+                                        class="form-control @error('prix') is-invalid @enderror" wire:model="prix">
                                     <span class="input-group-text">FC</span>
                                 </div>
                                 @error('prix') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Solde initial') }}</label>
-                                <input type="number" class="form-control @error('solde') is-invalid @enderror"
-                                    wire:model="solde">
+                                <input type="number" step="any"
+                                    class="form-control @error('solde') is-invalid @enderror" wire:model="solde">
                                 @error('solde') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Configuration (Conditionnement)') }}</label>
-                                <input type="number" class="form-control @error('configuration') is-invalid @enderror"
+                                <input type="number" step="any"
+                                    class="form-control @error('configuration') is-invalid @enderror"
                                     wire:model="configuration" placeholder="ex: 50 pour sac de 50kg">
                                 @error('configuration') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center gap-2 border rounded p-3 bg-light">
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch"
+                                            id="autoProductionSwitch" wire:model="auto_production">
+                                        <label class="form-check-label fw-semibold" for="autoProductionSwitch">
+                                            {{ __('Cocher automatiquement en Production') }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <small
+                                    class="text-muted ms-1">{{ __('Si activé, cette matière sera pré-sélectionnée lors de chaque nouvelle production.') }}</small>
                             </div>
                         </div>
                     </div>

@@ -17,8 +17,9 @@ class Maison extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    public $designation, $unite, $prix, $solde, $configuration;
+    public $designation, $unite, $prix, $solde, $configuration, $auto_production = false;
     public $isEditMode = false;
+    public $editingMaisonId = null;
 
     // Transfer fields
     public $transferQuantity;
@@ -35,6 +36,7 @@ class Maison extends Component
         'prix' => 'required|numeric|min:0',
         'solde' => 'nullable|numeric|min:0',
         'configuration' => 'nullable|numeric|min:0',
+        'auto_production' => 'boolean',
     ];
 
     public function updatedSearch()
@@ -49,6 +51,7 @@ class Maison extends Component
         $this->prix = 0;
         $this->solde = 0;
         $this->configuration = 0;
+        $this->auto_production = false;
         $this->editingMaisonId = null;
         $this->isEditMode = false;
         $this->selectedMaisons = [];
@@ -77,6 +80,7 @@ class Maison extends Component
                 'prix' => $this->prix,
                 'solde' => $this->solde ?? 0,
                 'configuration' => $this->configuration ?? 0,
+                'auto_production' => $this->auto_production ?? false,
             ]);
 
             // Comme dans le contrôleur de production, on crée automatiquement l'entrée Usine associée
@@ -107,6 +111,7 @@ class Maison extends Component
         $this->prix = $maison->prix;
         $this->solde = $maison->solde;
         $this->configuration = $maison->configuration;
+        $this->auto_production = (bool) $maison->auto_production;
 
         $this->dispatch('openModal', ['id' => 'maisonModal']);
     }
@@ -127,6 +132,7 @@ class Maison extends Component
             'prix' => $this->prix,
             'solde' => $this->solde ?? 0,
             'configuration' => $this->configuration ?? 0,
+            'auto_production' => $this->auto_production ?? false,
         ]);
 
         session()->flash('success', 'Mise à jour effectuée avec succès.');

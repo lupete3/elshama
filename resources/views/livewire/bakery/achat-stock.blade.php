@@ -212,17 +212,17 @@
                                                                     <div class="text-muted extra-small">{{ $data['unite'] }}</div>
                                                                 </td>
                                                                 <td data-label="{{ __('Qté') }}">
-                                                                    <input type="number" step="0.01" class="form-control @error('mpData.'.$id.'.quantite') is-invalid @enderror"
+                                                                    <input type="number" step="any" class="form-control @error('mpData.'.$id.'.quantite') is-invalid @enderror"
                                                                         wire:model.live="mpData.{{ $id }}.quantite">
                                                                     @error('mpData.'.$id.'.quantite') <div class="invalid-feedback extra-small text-start">{{ $message }}</div> @enderror
                                                                 </td>
                                                                 <td data-label="{{ __('P.U (FC)') }}">
-                                                                    <input type="number" step="0.01" class="form-control @error('mpData.'.$id.'.prix') is-invalid @enderror"
+                                                                    <input type="number" step="any" class="form-control @error('mpData.'.$id.'.prix') is-invalid @enderror"
                                                                         wire:model.live="mpData.{{ $id }}.prix">
                                                                     @error('mpData.'.$id.'.prix') <div class="invalid-feedback extra-small text-start">{{ $message }}</div> @enderror
                                                                 </td>
                                                                 <td data-label="{{ __('Payé (FC)') }}">
-                                                                    <input type="number" step="0.01" class="form-control border-primary @error('mpData.'.$id.'.montant_paye') is-invalid @enderror"
+                                                                    <input type="number" step="any" class="form-control border-primary @error('mpData.'.$id.'.montant_paye') is-invalid @enderror"
                                                                         wire:model="mpData.{{ $id }}.montant_paye">
                                                                     @error('mpData.'.$id.'.montant_paye') <div class="invalid-feedback extra-small text-start">{{ $message }}</div> @enderror
                                                                 </td>

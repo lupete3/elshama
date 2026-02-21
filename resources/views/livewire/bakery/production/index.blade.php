@@ -85,7 +85,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
+                            <td colspan="8" class="text-center py-4 text-muted">
                                 {{ __('Aucune production enregistrée.') }}
                             </td>
                         </tr>
@@ -127,6 +127,11 @@
                                 <h6 class="text-uppercase text-muted small fw-bold mb-2">{{ __('1. Produits Finis Obtenus') }}</h6>
                             </div>
                             <div class="col-12">
+                                <div class="input-group input-group-sm mb-2" style="max-width:300px;">
+                                    <span class="input-group-text"><i class="bx bx-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="{{ __('Rechercher un produit fini...') }}"
+                                        wire:model.live.debounce.300ms="searchPf">
+                                </div>
                                 <div class="card border shadow-none mb-3">
                                     <div class="card-body p-0">
                                         <div class="table-responsive" style="max-height: 250px;">
@@ -135,6 +140,7 @@
                                                     <tr>
                                                         <th class="ps-3" style="width: 40px;">#</th>
                                                         <th>{{ __('Produit Fini') }}</th>
+                                                        <th>{{ __('Prix unitaire') }}</th>
                                                         <th class="text-center" style="width: 150px;">{{ __('Quantité Produite') }}</th>
                                                     </tr>
                                                 </thead>
@@ -147,6 +153,9 @@
                                                             </td>
                                                             <td>
                                                                 <span class="small fw-bold">{{ $pf->designation }}</span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="small text-primary fw-semibold">{{ number_format($pf->prix, 0, ',', ' ') }} FC</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 @if(isset($checkedPfs[$pf->id]) && $checkedPfs[$pf->id])
@@ -173,6 +182,11 @@
                             </div>
                             
                             <div class="col-12">
+                                <div class="input-group input-group-sm mb-2" style="max-width:300px;">
+                                    <span class="input-group-text"><i class="bx bx-search"></i></span>
+                                    <input type="text" class="form-control" placeholder="{{ __('Rechercher une matière première...') }}"
+                                        wire:model.live.debounce.300ms="searchIngredient">
+                                </div>
                                 <div class="card border shadow-none">
                                     <div class="card-body p-0">
                                         <div class="table-responsive" style="max-height: 300px;">
@@ -182,6 +196,7 @@
                                                         <th class="ps-3" style="width: 40px;">#</th>
                                                         <th>{{ __('Ingredient') }}</th>
                                                         <th class="text-center">{{ __('Stock Disp.') }}</th>
+                                                        <th class="text-center">{{ __('Prix Unit.') }}</th>
                                                         <th class="text-center">{{ __('Qte par Défaut') }}</th>
                                                     </tr>
                                                 </thead>
@@ -194,6 +209,9 @@
                                                             </td>
                                                             <td>
                                                                 <span class="small fw-bold">{{ $mp->stockMaison->designation }}</span>
+                                                                @if($mp->stockMaison->auto_production)
+                                                                    <span class="badge bg-success ms-1" style="font-size:0.65rem;" title="{{ __('Sélectionnée automatiquement') }}">Auto</span>
+                                                                @endif
                                                                 <br>
                                                                 <span class="text-muted extra-small">{{ $mp->stockMaison->unite }}</span>
                                                             </td>
@@ -201,6 +219,9 @@
                                                                 <span class="badge @if($mp->solde <= 0) bg-label-danger @else bg-label-secondary @endif">
                                                                     {{ $mp->solde }}
                                                                 </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="text-success fw-semibold small">{{ number_format($mp->stockMaison->prix, 0, ',', ' ') }} FC</span>
                                                             </td>
                                                             <td class="text-center">
                                                                 <span class="text-primary fw-bold small">{{ $mp->stockMaison->configuration ?? 0 }}</span>
@@ -265,11 +286,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Main d\'œuvre / Personnel (FC)') }}</label>
-                                    <input type="number" class="form-control" wire:model="charge_personnel">
+                                    <input type="number" step="any" class="form-control" wire:model="charge_personnel">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Autres charges (Bois, Eau, Elec...) (FC)') }}</label>
-                                    <input type="number" class="form-control" wire:model="autres_charges">
+                                    <input type="number" step="any" class="form-control" wire:model="autres_charges">
                                 </div>
                             @endif
                         </div>

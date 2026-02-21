@@ -16,6 +16,11 @@ class StockMaison extends Model
         'prix',
         'solde',
         'configuration',
+        'auto_production',
+    ];
+
+    protected $casts = [
+        'auto_production' => 'boolean',
     ];
 
     public function achatStockMaisons(): HasMany

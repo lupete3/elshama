@@ -34,26 +34,26 @@
     <div class="nav-align-top mb-4">
         <div class="d-flex overflow-x-auto pb-2 scrollbar-hidden">
             <ul class="nav nav-pills flex-nowrap" role="tablist">
-            <li class="nav-item">
-                <button type="button" class="nav-link @if($activeTab == 'inventory') active @endif" role="tab"
-                    wire:click="$set('activeTab', 'inventory')">
-                    <i class="bx bx-package me-1"></i> {{ __('1. Clôture Stock') }}
-                </button>
-            </li>
-            <li class="nav-item">
-                <button type="button" class="nav-link @if($activeTab == 'synthesis') active @endif" role="tab"
-                    wire:click="$set('activeTab', 'synthesis')">
-                    <i class="bx bx-calculator me-1"></i> {{ __('2. Synthèse Financière') }}
-                </button>
-            </li>
-            <li class="nav-item">
-                <button type="button" class="nav-link @if($activeTab == 'history') active @endif" role="tab"
-                    wire:click="$set('activeTab', 'history')">
-                    <i class="bx bx-history me-1"></i> {{ __('3. Historique') }}
-                </button>
-            </li>
-        </ul>
-    </div>
+                <li class="nav-item">
+                    <button type="button" class="nav-link @if($activeTab == 'inventory') active @endif" role="tab"
+                        wire:click="$set('activeTab', 'inventory')">
+                        <i class="bx bx-package me-1"></i> {{ __('1. Clôture Stock') }}
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link @if($activeTab == 'synthesis') active @endif" role="tab"
+                        wire:click="$set('activeTab', 'synthesis')">
+                        <i class="bx bx-calculator me-1"></i> {{ __('2. Synthèse Financière') }}
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="nav-link @if($activeTab == 'history') active @endif" role="tab"
+                        wire:click="$set('activeTab', 'history')">
+                        <i class="bx bx-history me-1"></i> {{ __('3. Historique') }}
+                    </button>
+                </li>
+            </ul>
+        </div>
 
         <div class="tab-content border shadow-none p-0 bg-transparent">
             {{-- Tab 1: Inventory Reconciliation --}}
@@ -167,19 +167,22 @@
                                 <div class="row g-3">
                                     <div class="col-6">
                                         <label class="form-label small">{{ __('Dépenses Journée') }}</label>
-                                        <input type="number" class="form-control" wire:model.live="depense">
+                                        <input type="number" step="any" class="form-control" wire:model.live="depense">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small">{{ __('Dettes Client (Crédit)') }}</label>
-                                        <input type="number" class="form-control" wire:model.live="dette_du_jour">
+                                        <input type="number" step="any" class="form-control"
+                                            wire:model.live="dette_du_jour">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small">{{ __('Fonds de Caisse / Change') }}</label>
-                                        <input type="number" class="form-control" wire:model.live="fonds_de_caisse">
+                                        <input type="number" step="any" class="form-control"
+                                            wire:model.live="fonds_de_caisse">
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label small">{{ __('Espèce Réel en Main') }}</label>
-                                        <input type="number" class="form-control border-primary fw-bold text-primary"
+                                        <input type="number" step="any"
+                                            class="form-control border-primary fw-bold text-primary"
                                             wire:model.live="espece_reel">
                                     </div>
                                 </div>
@@ -271,16 +274,16 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">{{ __('Reste en Stock (Relevé physique)') }}</label>
-                                <input type="number" class="form-control form-control-lg fw-bold"
+                                <input type="number" step="any" class="form-control form-control-lg fw-bold"
                                     wire:model="solde_final">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">{{ __('Avaries (Pertes)') }}</label>
-                                <input type="number" class="form-control" wire:model="avarie">
+                                <input type="number" step="any" class="form-control" wire:model="avarie">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small">{{ __('Consommation Interne') }}</label>
-                                <input type="number" class="form-control" wire:model="consommation">
+                                <input type="number" step="any" class="form-control" wire:model="consommation">
                             </div>
                         </div>
                     </div>
