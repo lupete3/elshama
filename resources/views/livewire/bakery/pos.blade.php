@@ -70,7 +70,7 @@
                                     @foreach($products as $prod)
                                         <tr>
                                             <td>
-                                                <h6 class="mb-0 small fw-bold">{{ $prod->stockProduitFinis->nom }}</h6>
+                                                <h6 class="mb-0 small fw-bold">{{ $prod->stockProduitFinis->designation }}</h6>
                                                 <span class="text-muted small">{{ number_format($prod->stockProduitFinis->prix, 0, ',', ' ') }} FC</span>
                                             </td>
                                             <td class="text-center">
