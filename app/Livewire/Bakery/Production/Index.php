@@ -36,6 +36,7 @@ class Index extends Component
     protected $rules = [
         'charge_personnel' => 'required|numeric|min:0',
         'autres_charges' => 'required|numeric|min:0',
+        'selectedIngredients.*.quantite' => 'required|numeric|min:0.01',
     ];
 
     public function updatedSearch()
@@ -85,13 +86,21 @@ class Index extends Component
             return;
 
         if ($value) {
+            // Check stock before adding
+            $qtyRequired = (float) ($usineItem->stockMaison->configuration ?? 0);
+            if ($usineItem->solde < $qtyRequired) {
+                $this->checkedIngredients[$id] = false;
+                $this->addError('checkedIngredients', "Stock insuffisant pour {$usineItem->stockMaison->designation}. Disponible: {$usineItem->solde} {$usineItem->stockMaison->unite}.");
+                return;
+            }
+
             // Add to selectedIngredients if not already there
             $exists = collect($this->selectedIngredients)->contains('stock_usine_id', $id);
             if (!$exists) {
                 $this->selectedIngredients[] = [
                     'stock_usine_id' => $usineItem->id,
                     'designation' => $usineItem->stockMaison->designation,
-                    'quantite' => (float) ($usineItem->stockMaison->configuration ?? 0),
+                    'quantite' => $qtyRequired,
                     'unite' => $usineItem->stockMaison->unite,
                     'prix' => $usineItem->stockMaison->prix,
                 ];
@@ -102,6 +111,25 @@ class Index extends Component
                 ->reject(fn($item) => $item['stock_usine_id'] == $id)
                 ->values()
                 ->toArray();
+        }
+    }
+
+    public function updatedSelectedIngredients($value, $key)
+    {
+        // $key is format "index.property" e.g. "0.quantite"
+        if (str_contains($key, '.quantite')) {
+            $parts = explode('.', $key);
+            $index = $parts[0];
+            $item = $this->selectedIngredients[$index];
+            $usineItem = StockUsine::find($item['stock_usine_id']);
+
+            $qty = is_numeric($value) ? (float) $value : 0;
+
+            if ($usineItem && $usineItem->solde < $qty) {
+                $this->addError("selectedIngredients.$index.quantite", "Stock insuffisant. Disponible: {$usineItem->solde} {$item['unite']}.");
+            } else {
+                $this->resetErrorBag("selectedIngredients.$index.quantite");
+            }
         }
     }
 
@@ -172,6 +200,15 @@ class Index extends Component
         if (empty($this->selectedIngredients)) {
             $this->addError('checkedIngredients', 'Vous devez ajouter au moins un ingrédient.');
             return;
+        }
+
+        // Final stock check for all ingredients
+        foreach ($this->selectedIngredients as $item) {
+            $usine = StockUsine::find($item['stock_usine_id']);
+            if ($usine->solde < $item['quantite']) {
+                $this->addError('checkedIngredients', "Stock insuffisant pour {$item['designation']}. Requis: {$item['quantite']}, Disponible: {$usine->solde} {$item['unite']}.");
+                return;
+            }
         }
 
         $user = auth()->user();

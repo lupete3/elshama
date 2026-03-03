@@ -253,8 +253,16 @@
                                         @forelse($selectedIngredients as $index => $item)
                                             <tr>
                                                 <td>{{ $item['designation'] }}</td>
-                                                <td>{{ $item['quantite'] }} {{ $item['unite'] }}</td>
-                                                <td>{{ number_format($item['prix'] * $item['quantite'], 0, ',', ' ') }} FC</td>
+                                                <td style="width: 220px;">
+                                                    <div class="input-group input-group-sm">
+                                                        <input type="number" step="0.01" class="form-control" 
+                                                            style="min-width: 80px;"
+                                                            wire:model.live="selectedIngredients.{{ $index }}.quantite">
+                                                        <span class="input-group-text">{{ $item['unite'] }}</span>
+                                                    </div>
+                                                    @error("selectedIngredients.$index.quantite") <div class="text-danger extra-small">{{ $message }}</div> @enderror
+                                                </td>
+                                                <td>{{ number_format(($item['prix'] ?? 0) * (is_numeric($item['quantite'] ?? 0) ? $item['quantite'] : 0), 0, ',', ' ') }} FC</td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-sm btn-icon text-danger" wire:click="removeIngredient({{ $index }})">
                                                         <i class="bx bx-x"></i>
@@ -271,7 +279,7 @@
                                         <tfoot class="table-light">
                                             <tr>
                                                 <th colspan="2">{{ __('TOTAL MATIÈRES PREMIÈRES') }}</th>
-                                                <th colspan="2">{{ number_format(collect($selectedIngredients)->sum(function($i){ return $i['prix'] * $i['quantite']; }), 0, ',', ' ') }} FC</th>
+                                                <th colspan="2">{{ number_format(collect($selectedIngredients)->sum(function($i){ return ($i['prix'] ?? 0) * (is_numeric($i['quantite'] ?? 0) ? $i['quantite'] : 0); }), 0, ',', ' ') }} FC</th>
                                             </tr>
                                         </tfoot>
                                     @endif
