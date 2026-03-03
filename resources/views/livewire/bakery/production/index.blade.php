@@ -294,13 +294,70 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Main d\'œuvre / Personnel (FC)') }}</label>
-                                    <input type="number" step="any" class="form-control" wire:model="charge_personnel">
+                                    <input type="number" step="any" class="form-control" wire:model.live="charge_personnel">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Autres charges (Bois, Eau, Elec...) (FC)') }}</label>
-                                    <input type="number" step="any" class="form-control" wire:model="autres_charges">
+                                    <input type="number" step="any" class="form-control" wire:model.live="autres_charges">
                                 </div>
                             @endif
+
+                            {{-- Section Récapitulatif --}}
+                            <div class="col-12 mt-4">
+                                <div class="card bg-label-secondary border-0 shadow-none">
+                                    <div class="card-body">
+                                        <h6 class="text-uppercase fw-bold mb-3"><i class="bx bx-list-check me-2"></i>{{ __('4. Récapitulatif de Production') }}</h6>
+                                        <div class="row g-3">
+                                            @php
+                                                $totalPF = 0;
+                                                foreach($checkedPfs as $pfId => $checked) {
+                                                    if($checked) {
+                                                        $pf = $produitsPfs->find($pfId);
+                                                        if($pf) {
+                                                            $totalPF += ($pf->prix ?? 0) * (is_numeric($pfQuantities[$pfId] ?? 0) ? $pfQuantities[$pfId] : 0);
+                                                        }
+                                                    }
+                                                }
+                                                $totalMP = collect($selectedIngredients)->sum(function($i){ 
+                                                    return ($i['prix'] ?? 0) * (is_numeric($i['quantite'] ?? 0) ? $i['quantite'] : 0); 
+                                                });
+                                                $totalCharges = (float)(is_numeric($charge_personnel) ? $charge_personnel : 0) + (float)(is_numeric($autres_charges) ? $autres_charges : 0);
+                                                $coutTotal = $totalMP + $totalCharges;
+                                                $profit = $totalPF - $coutTotal;
+                                            @endphp
+                                            
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-muted small">{{ __('Valeur Produits') }}</span>
+                                                    <span class="fw-bold text-primary">{{ number_format($totalPF, 0, ',', ' ') }} FC</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-muted small">{{ __('Coût Matières') }}</span>
+                                                    <span class="fw-bold text-danger">{{ number_format($totalMP, 0, ',', ' ') }} FC</span>
+                                                </div>
+                                            </div>
+                                            @if(Auth::user()->role !== 'geran_depot_usine')
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-muted small">{{ __('Charges Annexes') }}</span>
+                                                    <span class="fw-bold text-warning">{{ number_format($totalCharges, 0, ',', ' ') }} FC</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="d-flex flex-column px-2 py-1 bg-white rounded border border-light">
+                                                    <span class="text-muted small">{{ __('Profit Estimé') }}</span>
+                                                    <span class="fw-bold {{ $profit >= 0 ? 'text-success' : 'text-danger' }}">
+                                                        {{ number_format($profit, 0, ',', ' ') }} FC
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer flex-column flex-sm-row gap-2">
