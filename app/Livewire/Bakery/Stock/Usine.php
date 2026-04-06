@@ -18,6 +18,7 @@ class Usine extends Component
     public $search = '';
     public $matiere_premiere_id, $quantite;
     public $isTransferMode = false;
+    public $adjustmentQuantity, $selectedUsineId;
 
     protected $rules = [
         'matiere_premiere_id' => 'required|exists:stock_maisons,id',
@@ -84,6 +85,40 @@ class Usine extends Component
         session()->flash('success', 'Transfert du dépôt vers l\'usine effectué avec succès.');
         $this->dispatch('closeModal', ['id' => 'usineModal']);
         $this->resetFields();
+    }
+
+    public function openAdjustmentModal($id)
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->selectedUsineId = $id;
+        $stockUsine = StockUsine::findOrFail($id);
+        $this->adjustmentQuantity = $stockUsine->solde;
+        $this->dispatch('openModal', ['id' => 'adjustmentModal']);
+    }
+
+    public function updateAdjustment()
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->validate([
+            'adjustmentQuantity' => 'required|numeric|min:0',
+        ]);
+
+        $stockUsine = StockUsine::findOrFail($this->selectedUsineId);
+        $stockUsine->update([
+            'solde' => $this->adjustmentQuantity,
+        ]);
+
+        session()->flash('success', 'Stock usine ajusté avec succès.');
+        $this->dispatch('closeModal', ['id' => 'adjustmentModal']);
+        $this->reset(['adjustmentQuantity', 'selectedUsineId']);
     }
 
     public function render()

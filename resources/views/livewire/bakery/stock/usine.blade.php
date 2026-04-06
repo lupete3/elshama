@@ -62,10 +62,17 @@
                                 <td>{{ number_format($item->stockMaison->prix * $item->solde, 0, ',', ' ') }} FC</td>
                             @endif
                             <td>{{ $item->stockMaison->configuration }}{{ $item->stockMaison->unite }}</td>
+                            <td>
+                                @if(Auth::user()->role === 'admin')
+                                    <button class="btn btn-sm btn-icon btn-label-primary" wire:click="openAdjustmentModal({{ $item->id }})" title="{{ __('Ajuster le Stock') }}">
+                                        <i class="bx bx-edit"></i>
+                                    </button>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="7" class="text-center py-4 text-muted">
                                 {{ __('Aucune matière première trouvée en usine.') }}
                             </td>
                         </tr>
@@ -75,7 +82,7 @@
                     <tfoot>
                         <tr class="table-light">
                             <td colspan="4" class="fw-bold">{{ __('Valeur Totale du Stock en Usine') }}</td>
-                            <td colspan="2" class="fw-bold text-warning">{{ number_format($tot, 0, ',', ' ') }} FC</td>
+                            <td colspan="3" class="fw-bold text-warning">{{ number_format($tot, 0, ',', ' ') }} FC</td>
                         </tr>
                     </tfoot>
                 @endif
@@ -129,6 +136,43 @@
                             data-bs-dismiss="modal">{{ __('Annuler') }}</button>
                         <button type="submit" class="btn btn-warning shadow">
                             <i class="bx bx-transfer me-1"></i> {{ __('Confirmer le Transfert') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Adjustment -->
+    <div wire:ignore.self class="modal fade" id="adjustmentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header shadow-sm mt-0">
+                    <h5 class="modal-title">{{ __('Ajuster le Stock Usine') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form wire:submit.prevent="updateAdjustment">
+                    <div class="modal-body">
+                        <div class="row g-3 text-start">
+                            <div class="col-12">
+                                <label class="form-label">{{ __('Nouveau Solde en Stock') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01"
+                                        class="form-control @error('adjustmentQuantity') is-invalid @enderror"
+                                        wire:model="adjustmentQuantity" placeholder="0.00">
+                                    <span class="input-group-text">
+                                        {{ $selectedUsineId ? \App\Models\StockUsine::find($selectedUsineId)->stockMaison->unite : '...' }}
+                                    </span>
+                                </div>
+                                @error('adjustmentQuantity') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top">
+                        <button type="button" class="btn btn-label-secondary"
+                            data-bs-dismiss="modal">{{ __('Annuler') }}</button>
+                        <button type="submit" class="btn btn-primary shadow">
+                            <i class="bx bx-check me-1"></i> {{ __('Confirmer l\'Ajustement') }}
                         </button>
                     </div>
                 </form>

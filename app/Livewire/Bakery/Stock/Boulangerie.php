@@ -17,6 +17,7 @@ class Boulangerie extends Component
 
     public $search = '';
     public $site_id; // Pour les admins, pour filtrer par site
+    public $adjustmentQuantity, $selectedBoulangerieId;
 
     public function mount()
     {
@@ -37,6 +38,40 @@ class Boulangerie extends Component
     public function updatedSiteId()
     {
         $this->resetPage();
+    }
+
+    public function openAdjustmentModal($id)
+    {
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->selectedBoulangerieId = $id;
+        $stockBoulangerie = StockBoulangerie::findOrFail($id);
+        $this->adjustmentQuantity = $stockBoulangerie->solde;
+        $this->dispatch('openModal', ['id' => 'adjustmentModalBoulangerie']);
+    }
+
+    public function updateAdjustment()
+    {
+        if (Auth::user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->validate([
+            'adjustmentQuantity' => 'required|numeric|min:0',
+        ]);
+
+        $stockBoulangerie = StockBoulangerie::findOrFail($this->selectedBoulangerieId);
+        $stockBoulangerie->update([
+            'solde' => $this->adjustmentQuantity,
+        ]);
+
+        session()->flash('success', 'Stock point de vente ajusté avec succès.');
+        $this->dispatch('closeModal', ['id' => 'adjustmentModalBoulangerie']);
+        $this->reset(['adjustmentQuantity', 'selectedBoulangerieId']);
     }
 
     public function render()

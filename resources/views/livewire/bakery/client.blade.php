@@ -35,7 +35,6 @@
                         <th>{{ __('Nom') }}</th>
                         <th>{{ __('Téléphone') }}</th>
                         <th>{{ __('Adresse') }}</th>
-                        <th>{{ __('Email') }}</th>
                         <th class="text-center">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -47,7 +46,6 @@
                             <td><strong>{{ $item->nom }}</strong></td>
                             <td>{{ $item->telephone ?? '-' }}</td>
                             <td>{{ $item->adresse ?? '-' }}</td>
-                            <td>{{ $item->email ?? '-' }}</td>
                             <td class="text-center">
                                 <div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -68,7 +66,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
+                            <td colspan="5" class="text-center py-4 text-muted">
                                 {{ __('Aucun client trouvé.') }}
                             </td>
                         </tr>
@@ -98,17 +96,11 @@
                                 placeholder="Ex: Jean Dupont">
                             @error('nom') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <label class="form-label">{{ __('Téléphone') }}</label>
                             <input type="text" class="form-control @error('telephone') is-invalid @enderror"
                                 wire:model="telephone" placeholder="0...">
                             @error('telephone') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">{{ __('Email') }}</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                wire:model="email" placeholder="client@...">
-                            @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-12">
                             <label class="form-label">{{ __('Adresse') }}</label>

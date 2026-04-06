@@ -12,9 +12,7 @@ class Client extends Model
     protected $fillable = [
         'nom',
         'telephone',
-        'email',
         'adresse',
-        'debt',
     ];
 
     public function sales()

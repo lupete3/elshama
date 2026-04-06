@@ -20,6 +20,7 @@ class Maison extends Component
     public $designation, $unite, $prix, $solde, $configuration, $auto_production = false;
     public $isEditMode = false;
     public $editingMaisonId = null;
+    public $adjustmentQuantity;
 
     // Transfer fields
     public $transferQuantity;
@@ -138,6 +139,40 @@ class Maison extends Component
         session()->flash('success', 'Mise à jour effectuée avec succès.');
         $this->dispatch('closeModal', ['id' => 'maisonModal']);
         $this->resetFields();
+    }
+
+    public function openAdjustmentModal($id)
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->editingMaisonId = $id;
+        $maison = StockMaison::findOrFail($id);
+        $this->adjustmentQuantity = $maison->solde;
+        $this->dispatch('openModal', ['id' => 'adjustmentModalMaison']);
+    }
+
+    public function updateAdjustment()
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->validate([
+            'adjustmentQuantity' => 'required|numeric|min:0',
+        ]);
+
+        $maison = StockMaison::findOrFail($this->editingMaisonId);
+        $maison->update([
+            'solde' => $this->adjustmentQuantity,
+        ]);
+
+        session()->flash('success', 'Stock dépôt ajusté avec succès.');
+        $this->dispatch('closeModal', ['id' => 'adjustmentModalMaison']);
+        $this->reset(['adjustmentQuantity', 'editingMaisonId']);
     }
 
     public function delete($id)

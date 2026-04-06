@@ -17,6 +17,7 @@ class Pf extends Component
     public $editingPfId, $site_id, $quantite_exp;
     public $isEditMode = false;
     public $isShippingMode = false;
+    public $adjustmentQuantity;
 
     // Mass selection properties
     public $selectedPfs = [];
@@ -113,6 +114,40 @@ class Pf extends Component
         session()->flash('success', 'Mise à jour effectuée avec succès.');
         $this->dispatch('closeModal', ['id' => 'pfModal']);
         $this->resetFields();
+    }
+
+    public function openAdjustmentModal($id)
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->editingPfId = $id;
+        $pf = StockPf::findOrFail($id);
+        $this->adjustmentQuantity = $pf->solde;
+        $this->dispatch('openModal', ['id' => 'adjustmentModalPf']);
+    }
+
+    public function updateAdjustment()
+    {
+        if (auth()->user()->role !== 'admin') {
+            session()->flash('error', 'Action non autorisée.');
+            return;
+        }
+
+        $this->validate([
+            'adjustmentQuantity' => 'required|numeric|min:0',
+        ]);
+
+        $pf = StockPf::findOrFail($this->editingPfId);
+        $pf->update([
+            'solde' => $this->adjustmentQuantity,
+        ]);
+
+        session()->flash('success', 'Stock produits finis ajusté avec succès.');
+        $this->dispatch('closeModal', ['id' => 'adjustmentModalPf']);
+        $this->reset(['adjustmentQuantity', 'editingPfId']);
     }
 
     public function openShipModal($id)

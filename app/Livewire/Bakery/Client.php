@@ -13,14 +13,13 @@ class Client extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    public $nom, $telephone, $email, $adresse;
+    public $nom, $telephone, $adresse;
     public $editingClientId;
     public $isEditMode = false;
 
     protected $rules = [
         'nom' => 'required|string|max:255',
         'telephone' => 'nullable|string|max:20',
-        'email' => 'nullable|email|max:255',
         'adresse' => 'nullable|string|max:500',
     ];
 
@@ -33,7 +32,6 @@ class Client extends Component
     {
         $this->nom = '';
         $this->telephone = '';
-        $this->email = '';
         $this->adresse = '';
         $this->editingClientId = null;
         $this->isEditMode = false;
@@ -52,7 +50,6 @@ class Client extends Component
         ClientModel::create([
             'nom' => $this->nom,
             'telephone' => $this->telephone,
-            'email' => $this->email,
             'adresse' => $this->adresse,
         ]);
 
@@ -69,7 +66,6 @@ class Client extends Component
 
         $this->nom = $client->nom;
         $this->telephone = $client->telephone;
-        $this->email = $client->email;
         $this->adresse = $client->adresse;
 
         $this->dispatch('openModal', ['id' => 'clientModal']);
@@ -83,7 +79,6 @@ class Client extends Component
         $client->update([
             'nom' => $this->nom,
             'telephone' => $this->telephone,
-            'email' => $this->email,
             'adresse' => $this->adresse,
         ]);
 

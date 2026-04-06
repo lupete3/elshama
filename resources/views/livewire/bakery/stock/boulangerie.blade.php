@@ -55,6 +55,9 @@
                         <th>{{ __('Solde') }}</th>
                         <th>{{ __('Valeur') }}</th>
                         <th>{{ __('Dernière mise à jour') }}</th>
+                        @if(Auth::user()->role === 'admin')
+                            <th class="text-center">{{ __('Actions') }}</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -74,23 +77,86 @@
                             </td>
                             <td>{{ number_format($item->stockProduitFinis->prix * $item->solde, 0, ',', ' ') }} FC</td>
                             <td class="small">{{ $item->updated_at->diffForHumans() }}</td>
+                            @if(Auth::user()->role === 'admin')
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-icon btn-label-primary" wire:click="openAdjustmentModal({{ $item->id }})" title="{{ __('Ajuster le Stock') }}">
+                                        <i class="bx bx-edit"></i>
+                                    </button>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ Auth::user()->isBakeryUser() ? 6 : 7 }}" class="text-center py-5 text-muted">
+                            <td colspan="{{ Auth::user()->isBakeryUser() ? (Auth::user()->role === 'admin' ? 7 : 6) : (Auth::user()->role === 'admin' ? 8 : 7) }}" class="text-center py-5 text-muted">
                                 <i class="bx bx-info-circle d-block mb-2 fs-2"></i>
                                 {{ __('Aucun stock trouvé pour ce site ou critère.') }}
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
+    <!-- Modal for Adjustment -->
+    <div wire:ignore.self class="modal fade" id="adjustmentModalBoulangerie" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header shadow-sm mt-0">
+                    <h5 class="modal-title">{{ __('Ajuster le Stock Point de Vente') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form wire:submit.prevent="updateAdjustment">
+                    <div class="modal-body">
+                        <div class="row g-3 text-start">
+                            <div class="col-12">
+                                <label class="form-label">{{ __('Nouveau Solde en Stock') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01"
+                                        class="form-control @error('adjustmentQuantity') is-invalid @enderror"
+                                        wire:model="adjustmentQuantity" placeholder="0.00">
+                                    <span class="input-group-text">{{ __('pcs') }}</span>
+                                </div>
+                                @error('adjustmentQuantity') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top">
+                        <button type="button" class="btn btn-label-secondary"
+                            data-bs-dismiss="modal">{{ __('Annuler') }}</button>
+                        <button type="submit" class="btn btn-primary shadow">
+                            <i class="bx bx-check me-1"></i> {{ __('Confirmer l\'Ajustement') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                window.addEventListener('openModal', (event) => {
+                    const modalElement = document.getElementById(event.detail[0].id);
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                        modal.show();
+                    }
+                });
+
+                window.addEventListener('closeModal', (event) => {
+                    const modalElement = document.getElementById(event.detail[0].id);
+                    if (modalElement) {
+                        const modal = bootstrap.Modal.getInstance(modalElement);
+                        if (modal) modal.hide();
+                    }
+                });
+            });
+        </script>
+    @endpush
                 @if($produits->total() > 0)
                     <tfoot>
                         <tr class="table-light">
                             <td colspan="{{ Auth::user()->isBakeryUser() ? 4 : 5 }}" class="fw-bold text-end pe-4">
                                 {{ __('Valeur Totale du Stock Sélectionné') }}
                             </td>
-                            <td colspan="2" class="fw-bold text-info">{{ number_format($tot, 0, ',', ' ') }} FC</td>
+                            <td colspan="3" class="fw-bold text-info">{{ number_format($tot, 0, ',', ' ') }} FC</td>
                         </tr>
                     </tfoot>
                 @endif

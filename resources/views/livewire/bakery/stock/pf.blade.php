@@ -94,11 +94,51 @@
                                             <button class="dropdown-item" wire:click="edit({{ $item->id }})">
                                                 <i class="bx bx-edit-alt me-1"></i> {{ __('Modifier') }}
                                             </button>
+                                            @if(Auth::user()->role === 'admin')
+                                                <button class="dropdown-item" wire:click="openAdjustmentModal({{ $item->id }})">
+                                                    <i class="bx bx-cog me-1"></i> {{ __('Ajuster le Stock') }}
+                                                </button>
+                                            @endif
                                             <button class="dropdown-item text-danger" wire:click="delete({{ $item->id }})"
                                                 onclick="confirm('Confirmer la suppression ?') || event.stopImmediatePropagation()">
                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                             </button>
                                         </div>
+...
+    <!-- Modal for Adjustment -->
+    <div wire:ignore.self class="modal fade" id="adjustmentModalPf" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header shadow-sm mt-0">
+                    <h5 class="modal-title">{{ __('Ajuster le Stock Fournil') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form wire:submit.prevent="updateAdjustment">
+                    <div class="modal-body">
+                        <div class="row g-3 text-start">
+                            <div class="col-12">
+                                <label class="form-label">{{ __('Nouveau Solde en Stock') }}</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01"
+                                        class="form-control @error('adjustmentQuantity') is-invalid @enderror"
+                                        wire:model="adjustmentQuantity" placeholder="0.00">
+                                    <span class="input-group-text">{{ __('pcs') }}</span>
+                                </div>
+                                @error('adjustmentQuantity') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top">
+                        <button type="button" class="btn btn-label-secondary"
+                            data-bs-dismiss="modal">{{ __('Annuler') }}</button>
+                        <button type="submit" class="btn btn-primary shadow">
+                            <i class="bx bx-check me-1"></i> {{ __('Confirmer l\'Ajustement') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
                                     </div>
                                 @endif
                             </td>
