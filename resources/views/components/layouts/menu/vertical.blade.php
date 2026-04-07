@@ -154,6 +154,15 @@
             </a>
           </li>
 
+          @if(Auth::user()->hasRoleString('admin'))
+            <li class="menu-item {{ request()->routeIs('bakery.stock.transfert') ? 'active' : '' }}">
+              <a class="menu-link" href="{{ route('bakery.stock.transfert') }}">
+                <i class="menu-icon tf-icons bx bx-repost"></i>
+                <div class="text-truncate">{{ __('Transferts Inter-Sites') }}</div>
+              </a>
+            </li>
+          @endif
+
           <li class="menu-item {{ request()->routeIs('bakery.cloture') ? 'active' : '' }}">
             <a class="menu-link" href="{{ route('bakery.cloture') }}">
               <i class="menu-icon tf-icons bx bx-lock-alt"></i>

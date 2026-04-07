@@ -47,20 +47,16 @@
                             <td>{{ $item->telephone ?? '-' }}</td>
                             <td>{{ $item->adresse ?? '-' }}</td>
                             <td class="text-center">
-                                <div class="dropdown">
-                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                        data-bs-toggle="dropdown">
-                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <a href="{{ route('bakery.clients.overview', $item->id) }}" class="btn btn-icon btn-text-info rounded-pill me-1" title="{{ __('Voir Fiche / Overview') }}">
+                                        <i class="bx bx-spreadsheet"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-icon btn-text-primary rounded-pill me-1" wire:click="edit({{ $item->id }})">
+                                        <i class="bx bx-edit"></i>
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <button class="dropdown-item" wire:click="edit({{ $item->id }})">
-                                            <i class="bx bx-edit-alt me-1"></i> {{ __('Modifier') }}
-                                        </button>
-                                        <button class="dropdown-item text-danger" wire:click="delete({{ $item->id }})"
-                                            onclick="confirm('Confirmer la suppression ?') || event.stopImmediatePropagation()">
-                                            <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
-                                        </button>
-                                    </div>
+                                    <button type="button" class="btn btn-icon btn-text-danger rounded-pill" onclick="confirm('Êtes-vous sûr de vouloir supprimer ce client ?') || event.stopImmediatePropagation()" wire:click="delete({{ $item->id }})">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>

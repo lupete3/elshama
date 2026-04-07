@@ -39,6 +39,7 @@ Route::get('dashboard-boulangerie', App\Livewire\Dashboard\Index::class)
 Route::middleware(['auth', 'verified', 'check.bakery.role:admin'])->group(function () {
   Route::get('bakery/admin/settings', App\Livewire\Bakery\Admin\Settings::class)->name('bakery.admin.settings');
   Route::get('bakery/reports', App\Livewire\Bakery\Reports::class)->name('bakery.reports');
+  Route::get('bakery/stock/transfert', App\Livewire\Bakery\Stock\Transfert::class)->name('bakery.stock.transfert');
 });
 
 // Espace Gérant Dépôt Magasin (MP Dépôt)
@@ -60,6 +61,8 @@ Route::middleware(['auth', 'verified', 'check.bakery.role:geran_depot_boulangeri
   Route::get('bakery/stock/boulangerie', App\Livewire\Bakery\Stock\Boulangerie::class)->name('bakery.stock.boulangerie');
   Route::get('bakery/clients', App\Livewire\Bakery\Client::class)->name('bakery.clients');
   Route::get('bakery/ventes', App\Livewire\Bakery\Pos::class)->name('bakery.pos');
+  Route::get('bakery/clients/{client}/overview', App\Livewire\Bakery\ClientDetail::class)->name('bakery.clients.overview');
+  Route::get('bakery/clients/{client}/export-pdf', [App\Http\Controllers\Bakery\ClientReportController::class, 'exportPdf'])->name('bakery.clients.export');
   Route::get('bakery/dettes', App\Livewire\Bakery\ClientDebt::class)->name('bakery.dettes');
   Route::get('bakery/caisse', App\Livewire\Bakery\Caisse\Index::class)->name('bakery.caisse');
   Route::get('bakery/cloture', App\Livewire\Bakery\Cloture::class)->name('bakery.cloture');

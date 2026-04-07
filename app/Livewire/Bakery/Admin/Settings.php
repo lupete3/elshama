@@ -4,6 +4,8 @@ namespace App\Livewire\Bakery\Admin;
 
 use App\Models\Site;
 use App\Models\User;
+use App\Models\StockPf;
+use App\Models\StockBoulangerie;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -65,12 +67,40 @@ class Settings extends Component
             Site::find($this->editingSiteId)->update(['nom' => $this->site_nom]);
             session()->flash('success', 'Point de vente mis à jour.');
         } else {
-            Site::create(['nom' => $this->site_nom]);
-            session()->flash('success', 'Point de vente ajouté.');
+            $site = Site::create(['nom' => $this->site_nom]);
+            $this->syncSiteStock($site->id);
+            session()->flash('success', 'Point de vente ajouté et synchronisé.');
         }
 
         $this->dispatch('closeModal', ['id' => 'siteModal']);
         $this->resetFields();
+    }
+
+    public function syncSiteStock($siteId)
+    {
+        $site = Site::findOrFail($siteId);
+        $products = StockPf::all();
+
+        $syncedCount = 0;
+        foreach ($products as $pf) {
+            $exists = StockBoulangerie::where('site_id', $siteId)
+                ->where('stock_pf_id', $pf->id)
+                ->exists();
+
+            if (!$exists) {
+                StockBoulangerie::create([
+                    'site_id' => $siteId,
+                    'stock_pf_id' => $pf->id,
+                    'solde' => 0,
+                    'inventaire' => false,
+                ]);
+                $syncedCount++;
+            }
+        }
+
+        if ($this->editingSiteId || $syncedCount > 0) {
+            session()->flash('success', "Synchronisation terminée : $syncedCount nouveaux produits ajoutés pour {$site->nom}.");
+        }
     }
 
     // --- USER METHODS ---

@@ -19,9 +19,9 @@ class Vente extends Model
         'commande_client_id',
     ];
 
-    public function stockBoulangerie(): BelongsTo
+    public function product(): BelongsTo
     {
-        return $this->belongsTo(StockBoulangerie::class);
+        return $this->belongsTo(StockPf::class, 'stock_pf_id');
     }
 
     public function commandeClient(): BelongsTo

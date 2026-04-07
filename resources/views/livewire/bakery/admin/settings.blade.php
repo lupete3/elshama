@@ -53,6 +53,10 @@
                                         <td>#{{ $s->id }}</td>
                                         <td><strong>{{ $s->nom }}</strong></td>
                                         <td class="text-end">
+                                            <button class="btn btn-sm btn-icon btn-label-warning me-1"
+                                                wire:click="syncSiteStock({{ $s->id }})" wire:loading.attr="disabled" title="{{ __('Synchroniser le Stock') }}">
+                                                <i class="bx bx-sync"></i>
+                                            </button>
                                             <button class="btn btn-sm btn-icon btn-label-primary"
                                                 wire:click="openSiteModal({{ $s->id }})">
                                                 <i class="bx bx-edit"></i>
