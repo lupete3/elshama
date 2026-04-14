@@ -15,13 +15,8 @@ class Client extends Model
         'adresse',
     ];
 
-    public function sales()
+    public function commandeClients()
     {
-        return $this->hasMany(Sale::class);
-    }
-
-    public function debts()
-    {
-        return $this->hasMany(ClientDebt::class);
+        return $this->hasMany(CommandeClient::class);
     }
 }

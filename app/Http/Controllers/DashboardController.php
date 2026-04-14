@@ -3,12 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\ClientDebt;
-use App\Models\Product;
-use App\Models\Purchase;
-use App\Models\Sale;
-use App\Models\Supplier;
-use App\Models\SupplierDebt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 

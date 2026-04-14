@@ -69,22 +69,6 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function stores()
-    {
-        return $this->belongsToMany(Store::class, 'store_user')
-            ->withPivot('role')
-            ->withTimestamps();
-    }
-
-    public function cashRegisters()
-    {
-        return $this->hasMany(CashRegister::class);
-    }
-
-    public function expenses()
-    {
-        return $this->hasMany(Expense::class);
-    }
 
     public function hasRole($role)
     {
@@ -111,14 +95,21 @@ class User extends Authenticatable
      */
     public function isBakeryUser(): bool
     {
+        // Les SuperAdmins (role_id 4) ne sont jamais considérés comme des utilisateurs boulangerie standards
+        if ($this->role_id == 4) {
+            return false;
+        }
+
         $bakeryRoles = ['admin', 'geran_depot_magasin', 'geran_depot_usine', 'geran_depot_boulangerie'];
 
-        // Si le rôle est une chaîne et fait partie de la liste boulangerie
-        if (is_string($this->role) && in_array($this->role, $bakeryRoles)) {
+        // On utilise getRawOriginal ou getAttribute('role') pour éviter le conflit avec la relation role()
+        $roleValue = $this->getAttribute('role');
+
+        if (is_string($roleValue) && in_array($roleValue, $bakeryRoles)) {
             return true;
         }
 
-        // Cas particulier de l'admin (qui peut avoir role_id = NULL et role = 'admin')
+        // Cas particulier de l'utilisateur avec site_id mais sans tenant_id (caractéristique boulangerie)
         return is_null($this->tenant_id) && !is_null($this->site_id);
     }
 
@@ -154,15 +145,17 @@ class User extends Authenticatable
      */
     public function hasRoleString(string $role): bool
     {
-        if ($this->isBakeryUser()) {
-            return $this->role === $role;
+        // Les SuperAdmins ont accès à tout par défaut dans les checks de rôle
+        if ($this->role_id == 4) {
+            return true;
         }
 
-        // Pour inventaire - On utilise explicitement la relation pour éviter le conflit avec l'attribut 'role'
-        // Si role_id est présent, on vérifie via la relation
+        if ($this->isBakeryUser()) {
+            return $this->getAttribute('role') === $role;
+        }
+
+        // Pour inventaire - On utilise explicitement la relation pour vérifier le nom du rôle
         if ($this->role_id) {
-            // On charge la relation si elle n'est pas déjà présente pour éviter des requêtes inutiles
-            // Mais en Blade, on préfère la relation déjà chargée ou un check direct
             return $this->role()->first()?->name === $role;
         }
 

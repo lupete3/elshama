@@ -22,21 +22,31 @@ class CheckSubscription
             return redirect()->route('login');
         }
 
-        // 🔹 Bypass si c'est un Super Admin
-        if ($user->hasRoleString('Super Admin')) {
+        // 🔹 Bypass si c'est un Super Admin (role_id 4 ou check role string)
+        if ($user->role_id == 4 || $user->hasRoleString('Super Admin')) {
             return $next($request);
+        }
+
+        // 🔹 Vérification de l'activité du compte utilisateur
+        if (!$user->is_active) {
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Votre compte est désactivé.');
         }
 
         $tenant = $user->tenant;
 
-        if (!$tenant || !$tenant->is_active) {
+        // 🔹 Si l'utilisateur appartient à une organisation, elle doit être active
+        if ($tenant && !$tenant->is_active) {
             return abort(403, 'Votre organisation est suspendue. Contactez l\'administration.');
         }
 
-        $subscription = $tenant->activeSubscription()->first();
+        // 🔹 Vérification de la souscription (Uniquement si l'utilisateur appartient à un tenant)
+        if ($tenant) {
+            $subscription = $tenant->activeSubscription()->first();
 
-        if (!$subscription || !$subscription->isValid()) {
-            return abort(403, 'Votre abonnement a expiré. Merci de renouveler.');
+            if (!$subscription || !$subscription->isValid()) {
+                return abort(403, 'Votre abonnement a expiré. Merci de renouveler.');
+            }
         }
 
         return $next($request);

@@ -18,9 +18,15 @@
     <div class="menu-inner-shadow mt-4"></div>
 
     <ul class="menu-inner py-1">
-      <!-- Tableau de Bord Global -->
-      <li
-        class="menu-item {{ request()->routeIs('overviewsuperadmin.index') || request()->is('dashboard') ? 'active' : '' }}">
+      <!-- Tableaux de Bord -->
+      <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+        <a class="menu-link" href="{{ route('dashboard') }}" >
+          <i class="menu-icon tf-icons bx bx-stats"></i>
+          <div class="text-truncate">{{ __('Dashboard SaaS') }}</div>
+        </a>
+      </li>
+
+      <li class="menu-item {{ request()->routeIs('overviewsuperadmin.index') ? 'active' : '' }}">
         <a class="menu-link" href="{{ route('overviewsuperadmin.index') }}" >
           <i class="menu-icon tf-icons bx bx-tachometer"></i>
           <div class="text-truncate">{{ __('Tableau de Bord Global') }}</div>
@@ -59,13 +65,6 @@
         <span class="menu-header-text">{{ __('Administration') }}</span>
       </li>
 
-      <!-- Utilisateurs Globaux -->
-      <li class="menu-item {{ request()->routeIs('users.index') ? 'active' : '' }}">
-        <a class="menu-link" href="{{ route('users.index') }}" >
-          <i class="menu-icon tf-icons bx bx-user-circle"></i>
-          <div class="text-truncate">{{ __('Utilisateurs Globaux') }}</div>
-        </a>
-      </li>
 
       <!-- Paramètres Système -->
       <li

@@ -25,14 +25,15 @@ class Tenant extends Model
         return $this->hasMany(User::class);
     }
 
-    public function stores()
-    {
-        return $this->hasMany(Store::class);
-    }
 
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function stores()
+    {
+        return $this->hasMany(Store::class);
     }
 
     public function activeSubscription()

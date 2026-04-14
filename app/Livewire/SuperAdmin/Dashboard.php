@@ -48,7 +48,7 @@ class Dashboard extends Component
         // Répartition des plans
         $planDistribution = Plan::withCount('subscriptions')->get();
 
-        $latestTenants = Tenant::with('subscriptions')
+        $latestTenants = Tenant::with('subscriptions', 'stores')
             ->latest()
             ->take(5)
             ->get();

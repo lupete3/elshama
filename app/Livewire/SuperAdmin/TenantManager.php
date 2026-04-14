@@ -82,15 +82,14 @@ class TenantManager extends Component
                 'is_active'    => $this->is_active,
             ]
         );
-
         // Si c’est une création (pas une mise à jour)
         if (!$this->isEditMode) {
             // 1. Créer un magasin par défaut
             $store = Store::create([
                 'tenant_id' => $tenant->id,
                 'name'      => 'Magasin Principal',
-                'address'   => $this->address,
-                'is_active' => true,
+                'location'  => $this->address,
+                // 'is_active' => true, // La colonne is_active n'existe pas dans la table stores selon la migration
             ]);
 
             // 2. Récupérer ou créer le rôle Admin
@@ -102,7 +101,7 @@ class TenantManager extends Component
             // 3. Créer l’utilisateur Admin
             User::create([
                 'tenant_id' => $tenant->id,
-                'store_id'  => $store->id,
+                // 'store_id'  => $store->id, // La colonne store_id n'existe pas dans la table users
                 'role_id'   => $adminRole->id,
                 'name'      => $this->contact_name ?: $this->name,
                 'email'     => $this->email,
