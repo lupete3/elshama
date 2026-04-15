@@ -27,12 +27,19 @@ class ClientDebt extends Component
     // Details fields
     public $selectedDetailsCommande;
 
+    public $filterSiteId = '';
+
     protected $rules = [
         'montantPaye' => 'required|numeric|min:1',
         'selectedSiteId' => 'required|exists:sites,id',
     ];
 
     public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterSiteId()
     {
         $this->resetPage();
     }
@@ -98,12 +105,21 @@ class ClientDebt extends Component
 
     public function render()
     {
-        $site_id = Auth::user()->site_id ?? 1;
+        $user = Auth::user();
 
-        $unpaidCommandes = CommandeClient::with(['client', 'ventes'])
-            ->where('site_id', $site_id)
-            ->where('reste', '>', 0)
-            ->whereHas('client', function ($q) {
+        $query = CommandeClient::with(['client', 'ventes'])
+            ->where('reste', '>', 0);
+
+        // Apply site filter
+        if ($this->filterSiteId !== '') {
+            $query->where('site_id', $this->filterSiteId);
+        } elseif (!$user->hasRoleString('admin')) {
+            // Default filter for non-admins
+            $site_id = $user->site_id ?? 1;
+            $query->where('site_id', $site_id);
+        }
+
+        $unpaidCommandes = $query->whereHas('client', function ($q) {
                 $q->where('nom', 'like', '%' . $this->search . '%');
             })
             ->orderBy('id', 'DESC')

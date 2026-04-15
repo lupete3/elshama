@@ -17,11 +17,25 @@
             class="card-header border-bottom d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
             <h5 class="card-title mb-0">{{ __('Commandes avec Reste à Payer') }}</h5>
             <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-md-auto">
-                <div class="input-group input-group-merge" style="min-width: 200px;">
+                {{-- Store Filter --}}
+                <div style="min-width: 200px;">
+                    <select class="form-select" wire:model.live="filterSiteId">
+                        <option value="">{{ __('Tous les points de vente') }}</option>
+                        @foreach($sites as $site)
+                            <option value="{{ $site->id }}">{{ $site->nom }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="input-group input-group-merge" style="min-width: 250px;">
                     <span class="input-group-text"><i class="bx bx-search"></i></span>
                     <input type="text" class="form-control" placeholder="{{ __('Filtrer par client...') }}"
                         wire:model.live.debounce.300ms="search">
                 </div>
+
+                <a href="{{ route('bakery.pos') }}" class="btn btn-primary text-nowrap">
+                    <i class="bx bx-cart me-1"></i> {{ __('Vente POS') }}
+                </a>
             </div>
         </div>
         <div class="card-datatable table-responsive">
