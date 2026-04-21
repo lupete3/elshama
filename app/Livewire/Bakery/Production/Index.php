@@ -179,6 +179,12 @@ class Index extends Component
         $this->selectedIngredients = array_values($this->selectedIngredients);
     }
 
+    public function deselectAllIngredients()
+    {
+        $this->selectedIngredients = [];
+        $this->checkedIngredients = [];
+    }
+
     public function store()
     {
         $this->validate();
@@ -197,10 +203,12 @@ class Index extends Component
             }
         }
 
+        /*
         if (empty($this->selectedIngredients)) {
             $this->addError('checkedIngredients', 'Vous devez ajouter au moins un ingrédient.');
             return;
         }
+        */
 
         // Final stock check for all ingredients
         foreach ($this->selectedIngredients as $item) {
@@ -235,8 +243,12 @@ class Index extends Component
 
                 if ($isFirst) {
                     // Update designations with ingredients info
-                    $ingredientNames = implode(', ', array_column($this->selectedIngredients, 'designation'));
-                    $production->update(['designation' => $pf->designation . ' - Ingrédients: ' . $ingredientNames]);
+                    if (!empty($this->selectedIngredients)) {
+                        $ingredientNames = implode(', ', array_column($this->selectedIngredients, 'designation'));
+                        $production->update(['designation' => $pf->designation . ' - Ingrédients: ' . $ingredientNames]);
+                    } else {
+                        $production->update(['designation' => $pf->designation]);
+                    }
 
                     // 3. Update Ingredients Stock & Create Compositions ONLY for the first product
                     foreach ($this->selectedIngredients as $item) {

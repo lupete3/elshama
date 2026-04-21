@@ -182,10 +182,15 @@
                             </div>
                             
                             <div class="col-12">
-                                <div class="input-group input-group-sm mb-2" style="max-width:300px;">
-                                    <span class="input-group-text"><i class="bx bx-search"></i></span>
-                                    <input type="text" class="form-control" placeholder="{{ __('Rechercher une matière première...') }}"
-                                        wire:model.live.debounce.300ms="searchIngredient">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="input-group input-group-sm" style="max-width:300px;">
+                                        <span class="input-group-text"><i class="bx bx-search"></i></span>
+                                        <input type="text" class="form-control" placeholder="{{ __('Rechercher une matière première...') }}"
+                                            wire:model.live.debounce.300ms="searchIngredient">
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-label-danger" wire:click="deselectAllIngredients">
+                                        <i class="bx bx-trash-alt me-1"></i> {{ __('Désélectionner tout') }}
+                                    </button>
                                 </div>
                                 <div class="card border shadow-none">
                                     <div class="card-body p-0">
