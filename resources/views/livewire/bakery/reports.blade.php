@@ -106,9 +106,21 @@
                 <div class="card">
                     <div class="card-header border-bottom d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                         <h5 class="mb-0">{{ __('Rapport des Ventes') }}</h5>
-                        <button wire:click="exportPdf('sales')" class="btn btn-sm btn-danger text-nowrap">
-                            <i class="bx bxs-file-pdf me-1"></i> {{ __('Exporter en PDF') }}
-                        </button>
+                        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <label class="form-label mb-0 fw-semibold text-nowrap small">
+                                    <i class="bx bx-store me-1"></i>{{ __('Point de vente :') }}
+                                </label>
+                                <select class="form-select form-select-sm" wire:model.live="selectedSalesSiteId" style="min-width: 160px;">
+                                    @foreach($sites as $site)
+                                        <option value="{{ $site->id }}">{{ $site->nom }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button wire:click="exportPdf('sales')" class="btn btn-sm btn-danger text-nowrap">
+                                <i class="bx bxs-file-pdf me-1"></i> {{ __('Exporter en PDF') }}
+                            </button>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">

@@ -32,12 +32,14 @@ class Reports extends Component
     public $startDate;
     public $endDate;
     public $selectedStockSiteId;
+    public $selectedSalesSiteId;
 
     public function mount()
     {
         $this->startDate = Carbon::today()->format('Y-m-d');
         $this->endDate = Carbon::today()->format('Y-m-d');
         $this->selectedStockSiteId = Auth::user()->site_id ?? 1;
+        $this->selectedSalesSiteId = Auth::user()->site_id ?? 1;
     }
 
     public function updatedDateFilter()
@@ -58,7 +60,7 @@ class Reports extends Component
     #[Computed]
     public function sales()
     {
-        $site_id = Auth::user()->site_id ?? 1;
+        $site_id = $this->selectedSalesSiteId ?: (Auth::user()->site_id ?? 1);
         return CommandeClient::with('client')
             ->where('site_id', $site_id)
             ->whereBetween('created_at', [Carbon::parse($this->startDate)->startOfDay(), Carbon::parse($this->endDate)->endOfDay()])
@@ -223,11 +225,13 @@ class Reports extends Component
 
         switch ($type) {
             case 'sales':
+                $sales_site_id = $this->selectedSalesSiteId ?: $site_id;
                 $data['sales'] = CommandeClient::with('client')
-                    ->where('site_id', $site_id)
+                    ->where('site_id', $sales_site_id)
                     ->whereBetween('created_at', [$startDate, $endDate])
                     ->orderBy('id', 'DESC')
                     ->get();
+                $data['selected_site'] = \App\Models\Site::find($sales_site_id)?->nom ?? 'Tous les sites';
                 $view = 'exports.bakery.sales';
                 $title = 'Rapport des Ventes';
                 break;
