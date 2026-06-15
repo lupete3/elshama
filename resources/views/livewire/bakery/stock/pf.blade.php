@@ -28,13 +28,13 @@
                     <i class="bx bx-history me-1"></i> {{ __('Historique PF') }}
                 </a>
 
-                @if(count($selectedPfs) > 0)
+                @if (count($selectedPfs) > 0)
                     <button class="btn btn-warning text-nowrap" wire:click="openMassShipModal">
                         <i class="bx bx-send me-1"></i> {{ __('Expédier') }} ({{ count($selectedPfs) }})
                     </button>
                 @endif
 
-                @if(Auth::user()->role !== 'geran_depot_usine')
+                @if (Auth::user()->role !== 'geran_depot_usine')
                     <button class="btn btn-primary text-nowrap" wire:click="create">
                         <i class="bx bx-plus me-1"></i> {{ __('Produit') }}
                     </button>
@@ -48,11 +48,11 @@
                         <th style="width: 40px;"></th>
                         <th>#</th>
                         <th>{{ __('Désignation') }}</th>
-                        @if(Auth::user()->role !== 'geran_depot_usine')
+                        @if (Auth::user()->role !== 'geran_depot_usine')
                             <th>{{ __('Prix de Vente') }}</th>
                         @endif
                         <th>{{ __('Solde Fournil') }}</th>
-                        @if(Auth::user()->role !== 'geran_depot_usine')
+                        @if (Auth::user()->role !== 'geran_depot_usine')
                             <th>{{ __('Valeur') }}</th>
                         @endif
                         <th class="text-center">{{ __('Actions') }}</th>
@@ -68,7 +68,7 @@
                             </td>
                             <td>{{ $i++ }}</td>
                             <td><strong>{{ $item->designation }}</strong></td>
-                            @if(Auth::user()->role !== 'geran_depot_usine')
+                            @if (Auth::user()->role !== 'geran_depot_usine')
                                 <td>{{ number_format($item->prix, 0, ',', ' ') }} FC</td>
                             @endif
                             <td>
@@ -76,7 +76,7 @@
                                     {{ $item->solde }} {{ __('pcs') }}
                                 </span>
                             </td>
-                            @if(Auth::user()->role !== 'geran_depot_usine')
+                            @if (Auth::user()->role !== 'geran_depot_usine')
                                 <td>{{ number_format($item->prix * $item->solde, 0, ',', ' ') }} FC</td>
                             @endif
                             <td class="text-center text-nowrap">
@@ -84,7 +84,7 @@
                                     wire:click="openShipModal({{ $item->id }})">
                                     <i class="bx bx-send me-1"></i> {{ __('Expédier') }}
                                 </button>
-                                @if(Auth::user()->role !== 'geran_depot_usine')
+                                @if (Auth::user()->role !== 'geran_depot_usine')
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-sm btn-icon dropdown-toggle hide-arrow"
                                             data-bs-toggle="dropdown">
@@ -94,51 +94,62 @@
                                             <button class="dropdown-item" wire:click="edit({{ $item->id }})">
                                                 <i class="bx bx-edit-alt me-1"></i> {{ __('Modifier') }}
                                             </button>
-                                            @if(Auth::user()->role === 'admin')
-                                                <button class="dropdown-item" wire:click="openAdjustmentModal({{ $item->id }})">
+                                            @if (Auth::user()->role === 'admin')
+                                                <button class="dropdown-item"
+                                                    wire:click="openAdjustmentModal({{ $item->id }})">
                                                     <i class="bx bx-cog me-1"></i> {{ __('Ajuster le Stock') }}
                                                 </button>
                                             @endif
-                                            <button class="dropdown-item text-danger" wire:click="delete({{ $item->id }})"
+                                            {{-- <button class="dropdown-item text-danger" wire:click="delete({{ $item->id }})"
                                                 onclick="confirm('Confirmer la suppression ?') || event.stopImmediatePropagation()">
                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
-                                            </button>
+                                            </button> --}}
                                         </div>
-...
-    <!-- Modal for Adjustment -->
-    <div wire:ignore.self class="modal fade" id="adjustmentModalPf" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header shadow-sm mt-0">
-                    <h5 class="modal-title">{{ __('Ajuster le Stock Fournil') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form wire:submit.prevent="updateAdjustment">
-                    <div class="modal-body">
-                        <div class="row g-3 text-start">
-                            <div class="col-12">
-                                <label class="form-label">{{ __('Nouveau Solde en Stock') }}</label>
-                                <div class="input-group">
-                                    <input type="number" step="0.01"
-                                        class="form-control @error('adjustmentQuantity') is-invalid @enderror"
-                                        wire:model="adjustmentQuantity" placeholder="0.00">
-                                    <span class="input-group-text">{{ __('pcs') }}</span>
-                                </div>
-                                @error('adjustmentQuantity') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top">
-                        <button type="button" class="btn btn-label-secondary"
-                            data-bs-dismiss="modal">{{ __('Annuler') }}</button>
-                        <button type="submit" class="btn btn-primary shadow">
-                            <i class="bx bx-check me-1"></i> {{ __('Confirmer l\'Ajustement') }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
+                                        <!-- Modal for Adjustment -->
+                                        <div wire:ignore.self class="modal fade" id="adjustmentModalPf" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header shadow-sm mt-0">
+                                                        <h5 class="modal-title">{{ __('Ajuster le Stock Fournil') }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <form wire:submit.prevent="updateAdjustment">
+                                                        <div class="modal-body">
+                                                            <div class="row g-3 text-start">
+                                                                <div class="col-12">
+                                                                    <label
+                                                                        class="form-label">{{ __('Nouveau Solde en Stock') }}</label>
+                                                                    <div class="input-group">
+                                                                        <input type="number" step="0.01"
+                                                                            class="form-control @error('adjustmentQuantity') is-invalid @enderror"
+                                                                            wire:model="adjustmentQuantity"
+                                                                            placeholder="0.00">
+                                                                        <span
+                                                                            class="input-group-text">{{ __('pcs') }}</span>
+                                                                    </div>
+                                                                    @error('adjustmentQuantity')
+                                                                        <div class="invalid-feedback d-block">
+                                                                            {{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer border-top">
+                                                            <button type="button" class="btn btn-label-secondary"
+                                                                data-bs-dismiss="modal">{{ __('Annuler') }}</button>
+                                                            <button type="submit" class="btn btn-primary shadow">
+                                                                <i class="bx bx-check me-1"></i>
+                                                                {{ __('Confirmer l\'Ajustement') }}
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
                             </td>
@@ -151,11 +162,12 @@
                         </tr>
                     @endforelse
                 </tbody>
-                @if($produits->total() > 0 && Auth::user()->role !== 'geran_depot_usine')
+                @if ($produits->total() > 0 && Auth::user()->role !== 'geran_depot_usine')
                     <tfoot>
                         <tr class="table-light">
                             <td colspan="5" class="fw-bold">{{ __('Valeur Totale') }}</td>
-                            <td colspan="2" class="fw-bold text-success">{{ number_format($tot, 0, ',', ' ') }} FC</td>
+                            <td colspan="2" class="fw-bold text-success">{{ number_format($tot, 0, ',', ' ') }} FC
+                            </td>
                         </tr>
                     </tfoot>
                 @endif
@@ -182,7 +194,9 @@
                                 <label class="form-label">{{ __('Désignation') }}</label>
                                 <input type="text" class="form-control @error('designation') is-invalid @enderror"
                                     wire:model="designation">
-                                @error('designation') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('designation')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Prix de Vente') }}</label>
@@ -191,13 +205,17 @@
                                         class="form-control @error('prix') is-invalid @enderror" wire:model="prix">
                                     <span class="input-group-text">FC</span>
                                 </div>
-                                @error('prix') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                                @error('prix')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Solde initial') }}</label>
                                 <input type="number" step="any"
                                     class="form-control @error('solde') is-invalid @enderror" wire:model="solde">
-                                @error('solde') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('solde')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -230,20 +248,25 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ __('Point de Vente (Site)') }}</label>
-                                <select class="form-select @error('site_id') is-invalid @enderror" wire:model="site_id">
+                                <select class="form-select @error('site_id') is-invalid @enderror"
+                                    wire:model="site_id">
                                     <option value="">-- {{ __('Choisir') }} --</option>
-                                    @foreach($sites as $s)
+                                    @foreach ($sites as $s)
                                         <option value="{{ $s->id }}">{{ $s->nom }}</option>
                                     @endforeach
                                 </select>
-                                @error('site_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('site_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-12">
                                 <label class="form-label">{{ __('Quantité à expédier') }}</label>
                                 <input type="number" step="any"
                                     class="form-control @error('quantite_exp') is-invalid @enderror"
                                     wire:model="quantite_exp" placeholder="0">
-                                @error('quantite_exp') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('quantite_exp')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -276,11 +299,13 @@
                                 <select class="form-select @error('massSiteId') is-invalid @enderror"
                                     wire:model="massSiteId">
                                     <option value="">-- {{ __('Choisir') }} --</option>
-                                    @foreach($sites as $s)
+                                    @foreach ($sites as $s)
                                         <option value="{{ $s->id }}">{{ $s->nom }}</option>
                                     @endforeach
                                 </select>
-                                @error('massSiteId') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                @error('massSiteId')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <hr class="my-3">
@@ -298,9 +323,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($selectedPfs as $pfId)
+                                            @foreach ($selectedPfs as $pfId)
                                                 @php $p = \App\Models\StockPf::find($pfId); @endphp
-                                                @if($p)
+                                                @if ($p)
                                                     <tr>
                                                         <td>{{ $p->designation }}</td>
                                                         <td>{{ $p->solde }} pcs</td>
@@ -308,9 +333,11 @@
                                                             <input type="number" step="any"
                                                                 class="form-control form-control-sm @error('massQtys.' . $pfId) is-invalid @enderror"
                                                                 wire:model="massQtys.{{ $pfId }}">
-                                                            @error('massQtys.' . $pfId) <div class="invalid-feedback small">
-                                                                {{ $message }}
-                                                            </div> @enderror
+                                                            @error('massQtys.' . $pfId)
+                                                                <div class="invalid-feedback small">
+                                                                    {{ $message }}
+                                                                </div>
+                                                            @enderror
                                                         </td>
                                                     </tr>
                                                 @endif
