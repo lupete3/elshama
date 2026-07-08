@@ -21,7 +21,7 @@ class Index extends Component
     public $searchIngredient = ''; // Search inside modal – raw materials
     public $checkedPfs = []; // Array of stock_pf_id => boolean
     public $pfQuantities = []; // Array of stock_pf_id => quantity
-    public $charge_personnel = 0;
+    public $charge_personnel = 20000;
     public $autres_charges = 0;
 
     // Ingredient selection
@@ -64,6 +64,9 @@ class Index extends Component
                 'prix' => $usineItem->stockMaison->prix,
             ];
         }
+
+        $this->charge_personnel = 20000;
+        $this->autres_charges = 0;
 
         $this->dispatch('openModal', ['id' => 'productionModal']);
     }

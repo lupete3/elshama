@@ -46,7 +46,7 @@
                         $totCout = 0;
                     @endphp
                     @forelse($productions as $prod)
-                        @php 
+                        @php
                             $valeur = $prod->quantite * ($prod->produitFinis->prix ?? 0);
                             $coutMP = $prod->compositions->sum(function($c) { return $c->prix * $c->quantite; });
                             $autresFrais = $prod->charge_personnel + $prod->autres_charges;
@@ -75,8 +75,8 @@
                                     <button class="btn btn-sm btn-icon btn-label-warning" title="{{ __('Modifier') }}" wire:click="editProduction({{ $prod->id }})">
                                         <i class="bx bx-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-icon btn-label-danger" title="{{ __('Supprimer') }}" 
-                                        wire:click="deleteProduction({{ $prod->id }})" 
+                                    <button class="btn btn-sm btn-icon btn-label-danger" title="{{ __('Supprimer') }}"
+                                        wire:click="deleteProduction({{ $prod->id }})"
                                         wire:confirm="{{ __('Êtes-vous sûr de vouloir supprimer cette production ? Les stocks seront ajustés automatiquement.') }}">
                                         <i class="bx bx-trash"></i>
                                     </button>
@@ -148,7 +148,7 @@
                                                     @foreach($produitsPfs as $pf)
                                                         <tr>
                                                             <td class="ps-3">
-                                                                <input type="checkbox" class="form-check-input" 
+                                                                <input type="checkbox" class="form-check-input"
                                                                     wire:model.live="checkedPfs.{{ $pf->id }}">
                                                             </td>
                                                             <td>
@@ -159,8 +159,8 @@
                                                             </td>
                                                             <td class="text-center">
                                                                 @if(isset($checkedPfs[$pf->id]) && $checkedPfs[$pf->id])
-                                                                    <input type="number" step="0.01" 
-                                                                        class="form-control form-control-sm @error('pfQuantities.'.$pf->id) is-invalid @enderror" 
+                                                                    <input type="number" step="0.01"
+                                                                        class="form-control form-control-sm @error('pfQuantities.'.$pf->id) is-invalid @enderror"
                                                                         wire:model.live="pfQuantities.{{ $pf->id }}">
                                                                 @else
                                                                     <span class="text-muted small">-</span>
@@ -180,7 +180,7 @@
                             <div class="col-12 mt-4">
                                 <h6 class="text-uppercase text-muted small fw-bold mb-2">{{ __('2. Ingrédients / Matières Premières utilisées') }}</h6>
                             </div>
-                            
+
                             <div class="col-12">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <div class="input-group input-group-sm" style="max-width:300px;">
@@ -209,7 +209,7 @@
                                                     @foreach($matieresPremieres as $mp)
                                                         <tr>
                                                             <td class="ps-3">
-                                                                <input type="checkbox" class="form-check-input" 
+                                                                <input type="checkbox" class="form-check-input"
                                                                     wire:model.live="checkedIngredients.{{ $mp->id }}">
                                                             </td>
                                                             <td>
@@ -260,7 +260,7 @@
                                                 <td>{{ $item['designation'] }}</td>
                                                 <td style="width: 220px;">
                                                     <div class="input-group input-group-sm">
-                                                        <input type="number" step="0.01" class="form-control" 
+                                                        <input type="number" step="0.01" class="form-control"
                                                             style="min-width: 80px;"
                                                             wire:model.live="selectedIngredients.{{ $index }}.quantite">
                                                         <span class="input-group-text">{{ $item['unite'] }}</span>
@@ -299,7 +299,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Main d\'œuvre / Personnel (FC)') }}</label>
-                                    <input type="number" step="any" class="form-control" wire:model.live="charge_personnel">
+                                    <input type="number" step="any" values="20000" class="form-control" wire:model.live="charge_personnel">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">{{ __('Autres charges (Bois, Eau, Elec...) (FC)') }}</label>
@@ -323,14 +323,14 @@
                                                         }
                                                     }
                                                 }
-                                                $totalMP = collect($selectedIngredients)->sum(function($i){ 
-                                                    return ($i['prix'] ?? 0) * (is_numeric($i['quantite'] ?? 0) ? $i['quantite'] : 0); 
+                                                $totalMP = collect($selectedIngredients)->sum(function($i){
+                                                    return ($i['prix'] ?? 0) * (is_numeric($i['quantite'] ?? 0) ? $i['quantite'] : 0);
                                                 });
                                                 $totalCharges = (float)(is_numeric($charge_personnel) ? $charge_personnel : 0) + (float)(is_numeric($autres_charges) ? $autres_charges : 0);
                                                 $coutTotal = $totalMP + $totalCharges;
                                                 $profit = $totalPF - $coutTotal;
                                             @endphp
-                                            
+
                                             <div class="col-sm-6 col-md-3">
                                                 <div class="d-flex flex-column">
                                                     <span class="text-muted small">{{ __('Valeur Produits') }}</span>
